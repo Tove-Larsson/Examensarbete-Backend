@@ -1,5 +1,6 @@
 package com.tove.examensarbetebackend.model;
 
+import com.tove.examensarbetebackend.authorities.UserRole;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,6 +13,9 @@ public class AppUser {
     private String username;
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
+
     private boolean isAccountNonExpired;
     private boolean isAccountNonLocked;
     private boolean isCredentialsNonExpired;
@@ -22,12 +26,14 @@ public class AppUser {
 
     public AppUser(String username,
                    String password,
+                   UserRole userRole,
                    boolean isAccountNonExpired,
                    boolean isAccountNonLocked,
                    boolean isCredentialsNonExpired,
                    boolean isEnabled) {
         this.username = username;
         this.password = password;
+        this.userRole = userRole;
         this.isAccountNonExpired = isAccountNonExpired;
         this.isAccountNonLocked = isAccountNonLocked;
         this.isCredentialsNonExpired = isCredentialsNonExpired;

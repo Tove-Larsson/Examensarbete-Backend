@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.tove.examensarbetebackend.model.AppUser;
 import com.tove.examensarbetebackend.model.dto.AppUserDTO;
 
+import static com.tove.examensarbetebackend.authorities.UserRole.USER;
+
 @Service
 public class UserService {
 
@@ -26,6 +28,7 @@ public class UserService {
         AppUser appUser = new AppUser(
                 appUserDTO.username(),
                 passwordEncoder.encode(appUserDTO.password()),
+                USER,
                 true,
                 true,
                 true,
