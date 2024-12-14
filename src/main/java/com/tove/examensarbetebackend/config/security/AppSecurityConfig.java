@@ -34,7 +34,7 @@ public class AppSecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/users/**").permitAll()
+                        .requestMatchers("/", "/users/**", "/admin/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .logout(logout -> logout
