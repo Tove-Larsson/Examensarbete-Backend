@@ -1,6 +1,7 @@
 package com.tove.examensarbetebackend.service;
 
 import com.tove.examensarbetebackend.repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.tove.examensarbetebackend.model.AppUser;
 import com.tove.examensarbetebackend.model.dto.AppUserDTO;
 
+import static com.tove.examensarbetebackend.authorities.UserRole.ADMIN;
 import static com.tove.examensarbetebackend.authorities.UserRole.USER;
 
 @Service
@@ -45,4 +47,26 @@ public class UserService {
     }
 
 
+    public ResponseEntity<AppUserDTO> createAdminUser(AppUserDTO appUserDTO) {
+
+        if (userRepository.findByUsername(appUserDTO.username()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
+        AppUser newAdminUser = new AppUser(
+                appUserDTO.username(),
+                passwordEncoder.encode(appUserDTO.password()),
+                ADMIN,
+                true,
+                true,
+                true,
+                true
+
+        );
+
+        userRepository.save(newAdminUser);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(appUserDTO);
+
+    }
 }

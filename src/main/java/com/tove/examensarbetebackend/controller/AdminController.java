@@ -11,20 +11,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/admin")
+public class AdminController {
 
     private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public AdminController(UserService userService) {
         this.userService = userService;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<AppUserDTO> registerUser(@Valid @RequestBody AppUserDTO appUserDTO) {
+    @PostMapping("/create-admin")
+    public ResponseEntity<AppUserDTO> createAdmin(@Valid @RequestBody AppUserDTO appUserDTO) {
 
-        return userService.createUser(appUserDTO);
+        return userService.createAdminUser(appUserDTO);
     }
-
 }
