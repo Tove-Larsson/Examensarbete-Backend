@@ -1,5 +1,6 @@
 package com.tove.examensarbetebackend.config.security;
 
+import com.tove.examensarbetebackend.config.security.jwt.JWTFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +12,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -20,12 +24,14 @@ public class AppSecurityConfig {
     private final PasswordEncoder passwordEncoder;
     private final CustomUserDetailsService customUserDetailsService;
     private final CorsConfigurationSource corsConfigurationSource;
+    private final JWTFilter jwtFilter;
 
     @Autowired
-    public AppSecurityConfig(PasswordEncoder passwordEncoder, CustomUserDetailsService customUserDetailsService, CorsConfigurationSource corsConfigurationSource) {
+    public AppSecurityConfig(PasswordEncoder passwordEncoder, CustomUserDetailsService customUserDetailsService, CorsConfigurationSource corsConfigurationSource, JWTFilter jwtFilter) {
         this.passwordEncoder = passwordEncoder;
         this.customUserDetailsService = customUserDetailsService;
         this.corsConfigurationSource = corsConfigurationSource;
+        this.jwtFilter = jwtFilter;
     }
 
     @Bean
@@ -34,9 +40,10 @@ public class AppSecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/users/**", "/admin/**").permitAll()
+                        .requestMatchers("/", "/user/**", "/admin/**").permitAll()
                         .anyRequest().authenticated()
                 )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")
                 )
