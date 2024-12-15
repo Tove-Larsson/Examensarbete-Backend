@@ -38,7 +38,7 @@ public class AppSecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/user/**", "/admin/**", "/auth/**").permitAll()
+                        .requestMatchers("/", "/user/**", "/admin/**", "/auth/**", "/restaurant/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
