@@ -10,6 +10,7 @@ public record RestaurantDTO (
         String name,
         @NotBlank(message = "Address can not be blank")
         String address,
+        String city,
         int toilet
 ){
 

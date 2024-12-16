@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.NameNotFoundException;
 import java.util.List;
 
 @RestController
@@ -27,8 +28,15 @@ public class RestaurantController {
 
 
     @GetMapping("/all")
-    public ResponseEntity<List<RestaurantDTO>> getAllRestaurants(@RequestBody RestaurantDTO restaurantDTO) {
+    public ResponseEntity<List<RestaurantDTO>> getAllRestaurants() {
 
-        return restaurantService.getAllRestaurants(restaurantDTO);
+        return restaurantService.getAllRestaurants();
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteRestaurant(@RequestParam String name) {
+
+        return restaurantService.deleteRestaurant(name);
+    }
+
 }

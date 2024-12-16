@@ -12,15 +12,17 @@ public class Restaurant {
     private Long id;
     private String name;
     private String address;
+    private String city;
     private int toilet;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public Restaurant() {}
 
-    public Restaurant(String name, String address, int toilet) {
+    public Restaurant(String name, String address, String city, int toilet) {
         this.name = name;
         this.address = address;
+        this.city = city;
         this.toilet = toilet;
     }
 
@@ -58,6 +60,10 @@ public class Restaurant {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public String getCity() { return city; }
+
+    public void setCity(String city) { this.city = city; }
 
     public int getToilet() {
         return toilet;
