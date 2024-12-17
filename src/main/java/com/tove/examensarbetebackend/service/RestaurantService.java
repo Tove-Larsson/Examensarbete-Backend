@@ -7,8 +7,8 @@ import com.tove.examensarbetebackend.repository.RestaurantRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.naming.NameNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,6 +22,7 @@ public class RestaurantService {
         this.restaurantRepository = restaurantRepository;
     }
 
+    @Transactional(readOnly = true)
     public ResponseEntity<List<RestaurantDTO>> getAllRestaurants() {
         List<Restaurant> restaurants = restaurantRepository.findAll();
 
@@ -41,6 +42,7 @@ public class RestaurantService {
         return ResponseEntity.ok(restaurantDTOs);
     }
 
+    @Transactional
     public ResponseEntity<RestaurantDTO> createRestaurant(RestaurantDTO restaurantDTO) {
 
         Restaurant newRestaurant = new Restaurant(
@@ -55,6 +57,7 @@ public class RestaurantService {
         return ResponseEntity.status(HttpStatus.CREATED).body(restaurantDTO);
     }
 
+    @Transactional
     public ResponseEntity<String> deleteRestaurant(String name) {
 
         Optional<Restaurant> restaurantToDelete = restaurantRepository.findByName(name);
@@ -68,5 +71,22 @@ public class RestaurantService {
         restaurantRepository.delete(restaurant);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(restaurant.getName());
+    }
+
+    public ResponseEntity<String> updateRestaurant(String name, RestaurantDTO restaurantDTO) {
+
+        Optional<Restaurant> restaurantToUpdate = restaurantRepository.findByName(name);
+        if (restaurantToUpdate.isEmpty()) {
+            System.out.println("In If statement in update " + name);
+            throw new RestaurantNameNotFoundException(name + " Could not be found");
+        }
+
+        Restaurant restaurant = restaurantToUpdate.get();
+        restaurant.setName(restaurantDTO.name());
+        restaurant.setAddress(restaurantDTO.address());
+        restaurant.setCity(restaurantDTO.city());
+        restaurant.setToilet(restaurantDTO.toilet());
+        restaurantRepository.save(restaurant);
+        return ResponseEntity.status(HttpStatus.OK).body(restaurant.getName());
     }
 }

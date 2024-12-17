@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.NameNotFoundException;
 import java.util.List;
 
 @RestController
@@ -37,6 +36,12 @@ public class RestaurantController {
     public ResponseEntity<String> deleteRestaurant(@RequestParam String name) {
 
         return restaurantService.deleteRestaurant(name);
+    }
+
+    @PutMapping("/update/{name}")
+    public ResponseEntity<String> updateRestaurant(@PathVariable("name") String name, @RequestBody RestaurantDTO restaurantDTO) {
+
+        return restaurantService.updateRestaurant(name, restaurantDTO);
     }
 
 }
