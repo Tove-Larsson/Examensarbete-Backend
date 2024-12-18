@@ -35,10 +35,11 @@ public class AppSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource))
-                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/user/**", "/admin/**", "/auth/**", "/restaurant/**").permitAll()
+                        .requestMatchers("/restaurant/all").permitAll()
+                        .requestMatchers("/restaurant/delete").hasRole("ADMIN")
+                        .requestMatchers("/restaurant/**").authenticated()
+                        .requestMatchers("/", "/user/**", "/admin/**", "/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

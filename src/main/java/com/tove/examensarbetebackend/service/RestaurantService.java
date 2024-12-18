@@ -60,7 +60,7 @@ public class RestaurantService {
     @Transactional
     public ResponseEntity<String> deleteRestaurant(String name) {
 
-        Optional<Restaurant> restaurantToDelete = restaurantRepository.findByName(name);
+        Optional<Restaurant> restaurantToDelete = restaurantRepository.findByNameIgnoreCase(name);
 
         if (restaurantToDelete.isEmpty()) {
             System.out.println("In If statement in delete " + name);
@@ -75,7 +75,7 @@ public class RestaurantService {
 
     public ResponseEntity<String> updateRestaurant(String name, RestaurantDTO restaurantDTO) {
 
-        Optional<Restaurant> restaurantToUpdate = restaurantRepository.findByName(name);
+        Optional<Restaurant> restaurantToUpdate = restaurantRepository.findByNameIgnoreCase(name);
         if (restaurantToUpdate.isEmpty()) {
             System.out.println("In If statement in update " + name);
             throw new RestaurantNameNotFoundException(name + " Could not be found");
