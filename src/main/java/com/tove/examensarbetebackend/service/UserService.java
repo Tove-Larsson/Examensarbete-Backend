@@ -1,10 +1,10 @@
 package com.tove.examensarbetebackend.service;
 
-import com.tove.examensarbetebackend.config.security.jwt.JWTService;
 import com.tove.examensarbetebackend.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,14 +19,11 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JWTService jwtService;
-    private final AuthenticationManager authenticationManager;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JWTService jwtService, AuthenticationManager authenticationManager) {
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
     }
 
     @Transactional
@@ -42,7 +39,7 @@ public class UserService {
                 true
         );
 
-        if (userRepository.findByUsername(appUserDTO.username()).isPresent()) {
+        if (userRepository.findByUsernameIgnoreCase(appUserDTO.username()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
@@ -54,7 +51,7 @@ public class UserService {
 
     public ResponseEntity<AppUserDTO> createAdminUser(AppUserDTO appUserDTO) {
 
-        if (userRepository.findByUsername(appUserDTO.username()).isPresent()) {
+        if (userRepository.findByUsernameIgnoreCase(appUserDTO.username()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
@@ -74,4 +71,16 @@ public class UserService {
         return ResponseEntity.status(HttpStatus.CREATED).body(appUserDTO);
 
     }
+
+    @Transactional
+    public ResponseEntity<AppUserDTO> deleteAuthenticatedUser(Authentication authentication) {
+        String username = authentication.getName();
+        AppUser appUser = userRepository.findByUsernameIgnoreCase(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username));
+
+        userRepository.delete(appUser);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new AppUserDTO(appUser.getUsername()));
+    }
+
+
 }

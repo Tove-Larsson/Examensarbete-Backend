@@ -87,6 +87,6 @@ public class RestaurantService {
         restaurant.setCity(restaurantDTO.city());
         restaurant.setToilet(restaurantDTO.toilet());
         restaurantRepository.save(restaurant);
-        return ResponseEntity.status(HttpStatus.OK).body(restaurant.getName());
+        return ResponseEntity.status(HttpStatus.OK).body(restaurant.getName() + "updated successfully");
     }
 }

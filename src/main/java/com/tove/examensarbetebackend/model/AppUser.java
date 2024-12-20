@@ -71,6 +71,14 @@ public class AppUser {
         this.password = password;
     }
 
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
+    }
+
     public boolean isAccountNonExpired() {
         return isAccountNonExpired;
     }
