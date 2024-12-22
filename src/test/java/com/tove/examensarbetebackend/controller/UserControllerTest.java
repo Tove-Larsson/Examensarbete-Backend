@@ -9,10 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.tove.examensarbetebackend.authorities.UserRole.USER;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,15 +28,12 @@ class UserControllerTest {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final UserController userController;
-
     private final UserRepository userRepository;
 
     @Autowired
-    UserControllerTest(MockMvc mockMvc, PasswordEncoder passwordEncoder, UserController userController, UserRepository userRepository) {
+    UserControllerTest(MockMvc mockMvc, PasswordEncoder passwordEncoder, UserRepository userRepository) {
         this.mockMvc = mockMvc;
         this.passwordEncoder = passwordEncoder;
-        this.userController = userController;
         this.userRepository = userRepository;
     }
 
@@ -65,6 +65,18 @@ class UserControllerTest {
                         """))
                 .andExpect(status().isConflict());
 
+    }
+
+    @Test
+    @WithMockUser(username = "TestUser", roles = "USER")
+    @DisplayName("Testing if a user can delete themselves")
+    public void testAdminDeleteUserAsAdmin() throws Exception {
+        mockMvc.perform(delete("/user/delete-user")
+                        .param("username", "TestUser"))
+                .andExpect(status().isNoContent());
+
+        boolean userExists = userRepository.findByUsernameIgnoreCase("TestUser").isPresent();
+        assertThat(userExists).isFalse();
     }
 
 
