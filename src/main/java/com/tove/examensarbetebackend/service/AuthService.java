@@ -31,17 +31,19 @@ public class AuthService {
                                 appUserDTO.password()
                         ));
 
-        String generatedToken = jwtService.generateToken(appUserDTO.username());
-        System.out.println("Generated token: " + generatedToken);
+        String role = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .filter(authority -> authority.startsWith("ROLE_"))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Role does not exist in user"))
+                .substring(5);
+
+        String generatedToken = jwtService.generateToken(
+                authentication.getName()
+        );
         return new AuthResponseDTO(
                 generatedToken,
-                authentication.getAuthorities()
-                        .stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .filter(authority -> authority.startsWith("ROLE_"))
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalStateException("Role does not exist in user"))
-                        .substring(5)
+                role
         );
     }
 }
