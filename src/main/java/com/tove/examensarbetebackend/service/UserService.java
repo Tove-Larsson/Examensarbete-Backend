@@ -79,7 +79,7 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException(username));
 
         userRepository.delete(appUser);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new AppUserDTO(appUser.getUsername()));
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 

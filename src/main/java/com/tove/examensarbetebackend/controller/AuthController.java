@@ -24,8 +24,6 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody AppUserDTO appUserDTO) {
 
-        System.out.println(appUserDTO);
-
         return ResponseEntity.ok(authService.verify(appUserDTO));
 
     }
